@@ -1,0 +1,659 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050914">
+  <title>PKDEV.SECURITY — In Development</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --blue: #2563eb;
+      --cyan: #38bdf8;
+      --background: #050914;
+      --text: #e8edf8;
+      --muted: #8793a9;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: var(--background);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+
+    #particles {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .background-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(37,99,235,.16), transparent 35%),
+        radial-gradient(circle at 10% 90%, rgba(56,189,248,.08), transparent 30%);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      backdrop-filter: blur(1.5px);
+      background: rgba(3, 7, 18, 0.35);
+    }
+
+    /* Layout */
+
+    .page {
+      position: relative;
+      z-index: 2;
+      width: min(1120px, 90%);
+      margin: auto;
+    }
+
+    header {
+      height: 90px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .logo {
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: var(--blue);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: #3b82f6;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #3b82f6;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      50% { opacity: .3; box-shadow: 0 0 3px #3b82f6; }
+    }
+
+    /* Hero */
+
+    .hero {
+      min-height: 650px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 90px 0;
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      margin-bottom: 28px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 8vw, 90px);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -5px;
+      color: rgba(232, 237, 248, .17);
+      text-transform: uppercase;
+      text-shadow: 0 0 45px rgba(37,99,235,.15);
+      user-select: none;
+    }
+
+    .hero h1 span {
+      display: block;
+      color: rgba(59,130,246,.48);
+      font-size: .55em;
+      letter-spacing: 8px;
+      margin-top: 22px;
+    }
+
+    .hero-description {
+      max-width: 620px;
+      margin-top: 35px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 2;
+    }
+
+    .hero-line {
+      width: 100px;
+      height: 2px;
+      margin-top: 38px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      box-shadow: 0 0 20px var(--blue);
+    }
+
+    /* Sections */
+
+    section {
+      padding: 75px 0;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+
+    .section-label {
+      color: var(--blue);
+      font-size: 10px;
+      letter-spacing: 4px;
+      font-weight: 800;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-size: clamp(27px, 4vw, 40px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+
+    .section-description {
+      color: var(--muted);
+      max-width: 750px;
+      font-size: 14px;
+      line-height: 2;
+    }
+
+    /* Feature cards */
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 17px;
+      margin-top: 40px;
+    }
+
+    .card {
+      padding: 27px;
+      background: rgba(12, 22, 42, .48);
+      border: 1px solid rgba(59,130,246,.13);
+      border-radius: 13px;
+      backdrop-filter: blur(12px);
+      transition: .3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(59,130,246,.55);
+      box-shadow: 0 10px 40px rgba(37,99,235,.08);
+    }
+
+    .card-icon {
+      font-size: 25px;
+      margin-bottom: 22px;
+      color: var(--cyan);
+    }
+
+    .card h3 {
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.9;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 6px 10px;
+      border-radius: 5px;
+      background: rgba(37,99,235,.1);
+      color: #60a5fa;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Vision */
+
+    .vision-box {
+      padding: 40px;
+      border-radius: 15px;
+      background: linear-gradient(120deg, rgba(37,99,235,.12), rgba(12,22,42,.35));
+      border: 1px solid rgba(59,130,246,.2);
+    }
+
+    .vision-box p {
+      color: var(--muted);
+      line-height: 2.1;
+      font-size: 14px;
+      max-width: 850px;
+    }
+
+    /* Roadmap */
+
+    .roadmap {
+      margin-top: 35px;
+      display: grid;
+      gap: 13px;
+    }
+
+    .roadmap-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 9px;
+    }
+
+    .roadmap-number {
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    .roadmap-item h3 {
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .roadmap-item p {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    footer {
+      padding: 35px 0;
+      border-top: 1px solid rgba(255,255,255,.07);
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      color: #64748b;
+      font-size: 11px;
+    }
+
+    footer strong {
+      color: #a5b4fc;
+    }
+
+    @media(max-width: 600px) {
+      header { height: 75px; }
+      .logo { font-size: 15px; }
+      .nav-status { font-size: 9px; letter-spacing: 1px; }
+      .hero { min-height: 550px; }
+      .hero h1 { letter-spacing: -2px; }
+      .hero h1 span { letter-spacing: 4px; }
+      section { padding: 55px 0; }
+      .vision-box { padding: 25px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="particles"></canvas>
+  <div class="background-glow"></div>
+  <div class="overlay"></div>
+
+  <div class="page">
+
+    <header>
+      <div class="logo">PKDEV<span>.</span>SECURITY</div>
+
+      <div class="nav-status">
+        <span class="status-dot"></span>
+        System Development
+      </div>
+    </header>
+
+    <main>
+
+      <div class="hero">
+
+        <div class="eyebrow">Next Generation Minecraft Security</div>
+
+        <h1>
+          IN DEVELOPMENT
+          <span>PKDEV.SECURITY</span>
+        </h1>
+
+        <p class="hero-description">
+          A new approach to Minecraft network security and infrastructure
+          management is being built.
+          We are working on a unified platform designed to help server
+          owners monitor, manage, and protect their networks.
+        </p>
+
+        <div class="hero-line"></div>
+
+      </div>
+
+      <section>
+        <div class="section-label">01 / About The Project</div>
+
+        <h2 class="section-title">What is PKDEV.SECURITY?</h2>
+
+        <p class="section-description">
+          PKDEV.SECURITY is an upcoming security and management platform
+          designed specifically for Minecraft server networks.
+          Its goal is to bring server infrastructure monitoring,
+          security events, network visibility, and server management
+          together in one centralized environment.
+          <br><br>
+          The project is being developed to help network administrators
+          understand what is happening across their infrastructure
+          and manage their servers through a unified control platform.
+        </p>
+      </section>
+
+      <section>
+        <div class="section-label">02 / Planned Features</div>
+
+        <h2 class="section-title">What We Are Building</h2>
+
+        <p class="section-description">
+          These are the planned components of the platform.
+          They are currently under development and are not yet available.
+        </p>
+
+        <div class="features">
+
+          <div class="card">
+            <div class="card-icon">◈</div>
+            <h3>Infrastructure Management</h3>
+            <p>
+              Centralized visibility and management for Minecraft
+              server infrastructure and VPS environments.
+            </p>
+            <span class="tag">Planned</span>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">⌁</div>
+            <h3>Security Center</h3>
+            <p>
+              A dedicated security environment for reviewing
+              security events, alerts, and suspicious activity.
+            </p>
+            <span class="tag">Planned</span>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">⌘</div>
+            <h3>Network Monitoring</h3>
+            <p>
+              Network visibility, infrastructure health monitoring,
+              and detection of unusual traffic patterns.
+            </p>
+            <span class="tag">Planned</span>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">⬡</div>
+            <h3>Minecraft Integrations</h3>
+            <p>
+              Dedicated integrations for Velocity and Paper
+              to collect useful network and in-game security signals.
+            </p>
+            <span class="tag">Planned</span>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">▤</div>
+            <h3>Web Dashboard</h3>
+            <p>
+              A centralized web interface for infrastructure status,
+              event logs, security insights, and administration.
+            </p>
+            <span class="tag">Planned</span>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">⌬</div>
+            <h3>Controlled Server Console</h3>
+            <p>
+              A permission-based console with access control,
+              action validation, and audit logging.
+            </p>
+            <span class="tag">Planned</span>
+          </div>
+
+        </div>
+      </section>
+
+      <section>
+        <div class="section-label">03 / The Final Vision</div>
+
+        <h2 class="section-title">More Than Just A Dashboard.</h2>
+
+        <div class="vision-box">
+          <p>
+            The final goal is to build a complete Minecraft network
+            security ecosystem.
+            <br><br>
+            PKDEV.SECURITY is planned to combine a web dashboard,
+            a secure backend, a lightweight VPS agent, and dedicated
+            Minecraft integrations into one connected platform.
+            <br><br>
+            Server administrators will be able to gain better
+            visibility into their infrastructure, review security
+            events, monitor network activity, and manage supported
+            server operations with controlled permissions.
+            <br><br>
+            Our vision is to make Minecraft network administration
+            more organized, transparent, and security-focused.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-label">04 / Development Roadmap</div>
+
+        <h2 class="section-title">The Journey Ahead</h2>
+
+        <div class="roadmap">
+
+          <div class="roadmap-item">
+            <div class="roadmap-number">01</div>
+            <div>
+              <h3>Website & Platform Design</h3>
+              <p>Brand identity, interface design, and platform architecture.</p>
+            </div>
+          </div>
+
+          <div class="roadmap-item">
+            <div class="roadmap-number">02</div>
+            <div>
+              <h3>Backend & Database</h3>
+              <p>Building the core backend services and data infrastructure.</p>
+            </div>
+          </div>
+
+          <div class="roadmap-item">
+            <div class="roadmap-number">03</div>
+            <div>
+              <h3>Infrastructure Agent</h3>
+              <p>Developing secure communication with supported VPS environments.</p>
+            </div>
+          </div>
+
+          <div class="roadmap-item">
+            <div class="roadmap-number">04</div>
+            <div>
+              <h3>Minecraft Integrations</h3>
+              <p>Developing Velocity and Paper integration components.</p>
+            </div>
+          </div>
+
+          <div class="roadmap-item">
+            <div class="roadmap-number">05</div>
+            <div>
+              <h3>Testing & Public Release</h3>
+              <p>Security testing, compatibility checks, and future public availability.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <div><strong>PKDEV.SECURITY</strong> — Minecraft Network Security</div>
+      <div>Currently in development · All rights reserved.</div>
+    </footer>
+
+  </div>
+
+  <script>
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+
+    let width, height;
+    let particles = [];
+    let sparks = [];
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      createParticles();
+    }
+
+    function createParticles() {
+      particles = [];
+      const count = Math.min(
+        Math.floor((width * height) / 11000),
+        130
+      );
+
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - .5) * .35,
+          vy: (Math.random() - .5) * .35,
+          radius: Math.random() * 1.8 + .5
+        });
+      }
+    }
+
+    function createSpark() {
+      if (Math.random() < .035) {
+        sparks.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          life: 1,
+          size: Math.random() * 2 + 1,
+          angle: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Molecules and connecting lines
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(59,130,246,.65)";
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x;
+          const dy = p.y - q.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 115) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle =
+              `rgba(37,99,235,${(1 - distance / 115) * .19})`;
+            ctx.lineWidth = .7;
+            ctx.stroke();
+          }
+        }
+      });
+
+      // Electronic sparks
+      createSpark();
+
+      sparks.forEach((s, i) => {
+        s.x += Math.cos(s.angle) * 1.2;
+        s.y += Math.sin(s.angle) * 1.2;
+        s.life -= .025;
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(56,189,248,${s.life})`;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#38bdf8";
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        if (s.life <= 0) sparks.splice(i, 1);
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", resize);
+
+    resize();
+    animate();
+  </script>
+
+</body>
+</html>
